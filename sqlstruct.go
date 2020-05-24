@@ -240,6 +240,15 @@ func doScan(dest interface{}, rows Rows, alias string) error {
 		return err
 	}
 
+	// if alias is used, replace the struct field names with alias name
+	// to be able pair the columns
+	if len(alias) > 0 {
+		for name, val := range fieldInfo {
+			fieldInfo[strings.Replace(name, alias+"_", "", 1)] = val
+			delete(fieldInfo, name)
+		}
+	}
+
 	for _, name := range cols {
 		if len(alias) > 0 {
 			name = strings.Replace(name, alias+"_", "", 1)
